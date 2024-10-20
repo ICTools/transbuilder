@@ -38,7 +38,6 @@ func ParseFile(filePath string) (*ParsedFile, error) {
 	}
 }
 
-// YAML parsing
 func parseYAML(filePath string) (map[string]interface{}, error) {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
@@ -56,14 +55,15 @@ func parseYAML(filePath string) (map[string]interface{}, error) {
 func parseXLIFF(filePath string) (*model.Xliff, error) {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
 
 	var xliff model.Xliff
 	err = xml.Unmarshal(content, &xliff)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal XML: %w", err)
 	}
+
 	return &xliff, nil
 }
 

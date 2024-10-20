@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	// Arguments
 	var filePath string
 	var targetLangs string
 	var apiKey string
@@ -38,7 +37,20 @@ func main() {
 	}
 
 	for lang, translatedContent := range translations {
-		outputFile := fmt.Sprintf("%s_%s%s", filePath, lang, filepath.Ext(filePath))
+		originalDir := filepath.Dir(filePath)
+		baseName := filepath.Base(filePath)
+		ext := filepath.Ext(baseName)
+		baseNameWithoutExt := baseName[:len(baseName)-len(ext)]
+
+		baseNameParts := strings.Split(baseNameWithoutExt, "_")
+		if len(baseNameParts) > 1 {
+			baseNameWithoutExt = strings.Join(baseNameParts[:len(baseNameParts)-1], "_")
+		}
+
+		newFileName := fmt.Sprintf("%s_%s%s", baseNameWithoutExt, lang, ext)
+
+		outputFile := filepath.Join(originalDir, newFileName)
+
 		err := writer.WriteFile(outputFile, translatedContent)
 		if err != nil {
 			log.Fatal(err)

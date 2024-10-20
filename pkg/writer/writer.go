@@ -17,13 +17,29 @@ func WriteFile(filePath string, content interface{}) error {
 
 	switch ext {
 	case ".yaml", ".yml":
-		return WriteYAML(content.(map[string]interface{}), filePath)
+		yamlContent, ok := content.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("content is not of type map[string]interface{}")
+		}
+		return WriteYAML(yamlContent, filePath)
 	case ".xlf", ".xliff":
-		return WriteXliff(content.(*model.Xliff), filePath)
+		xliffContent, ok := content.(*model.Xliff)
+		if !ok {
+			return fmt.Errorf("content is not of type *model.Xliff")
+		}
+		return WriteXliff(xliffContent, filePath)
 	case ".csv":
-		return WriteCSV(content.([][]string), filePath)
+		csvContent, ok := content.([][]string)
+		if !ok {
+			return fmt.Errorf("content is not of type [][]string")
+		}
+		return WriteCSV(csvContent, filePath)
 	case ".json":
-		return WriteJSON(content.(map[string]interface{}), filePath)
+		jsonContent, ok := content.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("content is not of type map[string]interface{}")
+		}
+		return WriteJSON(jsonContent, filePath)
 	default:
 		return fmt.Errorf("unsupported file type: %s", ext)
 	}
